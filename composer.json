@@ -1,0 +1,41 @@
+{
+  "name": "redkooala/omnipay-paykeeper",
+  "description": "Omnipay driver for paykeeper",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "SanalOchirov",
+      "email": "orangesanfire@gmail.com"
+    }
+  ],
+  "keywords": [
+    "paykeeper",
+    "rest",
+    "api",
+    "payment"
+  ],
+  "require": {
+    "php": "^7.1",
+    "league/omnipay": "^3.0",
+    "ext-simplexml": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "omnipay/tests": "^3",
+    "phpunit/phpunit": "^5.7|^6",
+    "squizlabs/php_codesniffer": "3.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Omnipay\\Best2Pay\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Omnipay\\Paykeeper\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
