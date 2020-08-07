@@ -2,12 +2,13 @@
 
 namespace Omnipay\PayKeeper;
 
-use Omnipay\PayKeeper\Message\PurchaseRequest;
+use Omnipay\PayKeeper\Message\AuthorizeRequest;
 use Omnipay\PayKeeper\Message\CaptureRequest;
 use Omnipay\PayKeeper\Message\OrderStatusRequest;
 use Omnipay\PayKeeper\Message\RefundRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\RequestInterface;
+use Omnipay\PayKeeper\Message\TokenRequest;
 
 /**
  * Class Gateway
@@ -19,6 +20,8 @@ use Omnipay\Common\Message\RequestInterface;
  * @method \Omnipay\Common\Message\RequestInterface completePurchase(array $options = array())
  * @method \Omnipay\Common\Message\RequestInterface completeAuthorize(array $options = array())
  * @method \Omnipay\Common\Message\RequestInterface authorize(array $options = array())
+ * @method \Omnipay\Common\Message\NotificationInterface acceptNotification(array $options = array())
+ * @method \Omnipay\Common\Message\RequestInterface fetchTransaction(array $options = [])
  */
 class Gateway extends AbstractGateway
 {
@@ -35,7 +38,7 @@ class Gateway extends AbstractGateway
      */
     public function getShortName(): string
     {
-        return 'paykeeper';
+        return 'PayKeeper';
     }
 
     /**
@@ -44,21 +47,12 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters(): array
     {
         return [
-            'testMode' => false,
+            'user' => 'test',
+            'password' => 'test',
+            'endPoint' => ''
         ];
     }
 
-
-    /**
-     * Set user
-     *
-     * @param string $value
-     * @return Gateway
-     */
-    public function setSector(string $value): self
-    {
-        return $this->setParameter('user', $value);
-    }
 
     /**
      * Get user
@@ -68,6 +62,16 @@ class Gateway extends AbstractGateway
     public function getUser(): string
     {
         return $this->getParameter('user');
+    }
+
+    /**
+     * Set user
+     *
+     * @return $this
+     */
+    public function setUser(string $value): self
+    {
+        return $this->setParameter('user', $value);
     }
 
     /**
@@ -141,7 +145,7 @@ class Gateway extends AbstractGateway
      */
     public function purchase(array $options = []): RequestInterface
     {
-        return $this->createRequest(PurchaseRequest::class, $options);
+        return $this->createRequest(AuthorizeRequest::class, $options);
     }
 
     /**
@@ -178,11 +182,30 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * Order status request
+     *
+     * @param array $options
+     * @return RequestInterface
+     */
+    public function token(array $options = []): RequestInterface
+    {
+        return $this->createRequest(TokenRequest::class, $options);
+    }
+
+    /**
      * @return bool
      */
     public function supportsOrderStatus(): bool
     {
         return method_exists($this, 'orderStatus');
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportToken(): bool
+    {
+        return method_exists($this, 'token');
     }
 
 

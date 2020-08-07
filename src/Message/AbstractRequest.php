@@ -6,6 +6,8 @@ use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Message\AbstractRequest as BaseAbstractRequest;
 use Omnipay\Common\Message\ResponseInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * Class AbstractRequest
@@ -108,13 +110,13 @@ abstract class AbstractRequest extends BaseAbstractRequest
      */
     public function getHeaders(): array
     {
-        if (!$user = $this->getUser() || !$password = $this->getPassword()) {
+        if (!($user = $this->getUser()) || !$password = $this->getPassword()) {
             throw new \RuntimeException('invalid auth data');
         }
 
         return [
             "content-type" => 'application/x-www-form-urlencoded',
-               "Authorization" => "Basic" . base64_encode("$user:$password"),
+            "Authorization" => "Basic " . base64_encode("$user:$password"),
         ];
     }
 
@@ -128,7 +130,10 @@ abstract class AbstractRequest extends BaseAbstractRequest
      */
     public function sendData($data): ResponseInterface
     {
-        $url = $this->getEndPoint() . $this->getAction();
+        if (static::class === 'Omnipay\PayKeeper\Message\RefundRequest') {
+            //dd($data);
+        }
+        $url = $this->getUrl();
         $httpResponse = $this->httpClient->request(
             $this->getHttpMethod(),
             $url,
@@ -136,12 +141,13 @@ abstract class AbstractRequest extends BaseAbstractRequest
             http_build_query($data, '', '&')
         );
 
-        if ($httpResponse->getStatusCode() !== 401) {
-            throw new InvalidResponseException('authorize fail');
+
+        if ($httpResponse->getStatusCode() == 401) {
+            throw new UnauthorizedHttpException('authorize fail');
         }
 
-        if ($httpResponse->getStatusCode() !== 200) {
-            throw new \RuntimeException('invalid response status');
+        if (($status = $httpResponse->getStatusCode()) !== 200) {
+            throw new BadRequestHttpException('invalid response status:' . $status);
         }
 
         $responseClassName = str_replace('Request', 'Response', \get_class($this));
@@ -158,6 +164,15 @@ abstract class AbstractRequest extends BaseAbstractRequest
         }
 
         return $reflection->newInstance($this, $result, true);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    protected function getUrl(): string
+    {
+        return  $this->getEndPoint() . $this->getAction();
     }
 
     /**

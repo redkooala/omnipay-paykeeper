@@ -13,7 +13,7 @@ class OrderStatusRequest extends AbstractRequest
      */
     public function getAction(): string
     {
-        return '/info/options/byid/';
+        return '/info/payments/byid/';
     }
 
     /**
@@ -26,7 +26,7 @@ class OrderStatusRequest extends AbstractRequest
 
     /**
      * @param $value
-     * @return $this
+     * @return self
      */
     public function setId(int $value): self
     {
@@ -35,6 +35,7 @@ class OrderStatusRequest extends AbstractRequest
 
     /**
      * @inheritdoc
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function getData()
     {
@@ -43,5 +44,24 @@ class OrderStatusRequest extends AbstractRequest
         return [
             'id' => $this->getId(),
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getHttpMethod(): string
+    {
+        return 'GET';
+    }
+
+    /**
+     * @return string
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function getUrl(): string
+    {
+        $data = $this->getData();
+
+        return parent::getUrl() . '?' . http_build_query($data);
     }
 }

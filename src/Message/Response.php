@@ -24,7 +24,7 @@ class Response extends AbstractResponse
      */
     public function getMessage(): ?string
     {
-        return (!$this->isSuccessful() && $this->data['description']) ? $this->data['description'] : null;
+        return null;
     }
 
     /**
@@ -32,7 +32,7 @@ class Response extends AbstractResponse
      */
     public function getCode(): ?int
     {
-        return $this->data['code'] ?? 0;
+        return 0;
     }
 
     /**
@@ -40,6 +40,6 @@ class Response extends AbstractResponse
      */
     public function isSuccessful(): bool
     {
-        return $this->getCode() === 0;
+        return false;
     }
 }
