@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Omnipay\\Best2Pay\\": "src/"
+      "Omnipay\\PayKeeper\\": "src/"
     }
   },
   "autoload-dev": {
