@@ -6,6 +6,7 @@ use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Message\AbstractRequest as BaseAbstractRequest;
 use Omnipay\Common\Message\ResponseInterface;
+use Omnipay\PayKeeper\Exception\EmptyResponseException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -130,12 +131,9 @@ abstract class AbstractRequest extends BaseAbstractRequest
      */
     public function sendData($data): ResponseInterface
     {
-        if (static::class === 'Omnipay\PayKeeper\Message\RefundRequest') {
-            //dd($data);
-        }
         $url = $this->getUrl();
         $httpResponse = $this->httpClient->request(
-            $this->getHttpMethod(),
+            'GET',
             $url,
             $this->getHeaders(),
             http_build_query($data, '', '&')
@@ -150,7 +148,12 @@ abstract class AbstractRequest extends BaseAbstractRequest
             throw new BadRequestHttpException('invalid response status:' . $status);
         }
 
-        $responseClassName = str_replace('Request', 'Response', \get_class($this));
+        $responseClassName = str_replace(
+            'Request',
+            'Response',
+            \get_class($this)
+        );
+
         $reflection = new \ReflectionClass($responseClassName);
         if (!$reflection->isInstantiable()) {
             throw new RuntimeException(
@@ -160,7 +163,7 @@ abstract class AbstractRequest extends BaseAbstractRequest
 
         $result = json_decode($httpResponse->getBody()->getContents(), true);
         if (!$result) {
-            throw new InvalidResponseException('empty response');
+            throw new EmptyResponseException('empty response');
         }
 
         return $reflection->newInstance($this, $result, true);

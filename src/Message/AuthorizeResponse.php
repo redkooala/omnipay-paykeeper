@@ -27,7 +27,7 @@ class AuthorizeResponse extends Response implements RedirectResponseInterface
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function getRedirectData(): array
     {
@@ -40,7 +40,15 @@ class AuthorizeResponse extends Response implements RedirectResponseInterface
     }
 
     /**
-     * @inheritdoc
+     * @return string|null
+     */
+    public function getMessage(): ?string
+    {
+        return $this->data['msg'] ?? null;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getRedirectMethod(): string
     {
@@ -48,14 +56,17 @@ class AuthorizeResponse extends Response implements RedirectResponseInterface
     }
 
     /**
-     * Get the raw data array for this message. The format of this varies from gateway to
-     * gateway, but will usually be either an associative array, or a SimpleXMLElement.
-     *
-     * @return mixed
+     * @inheriDoc
      */
     public function getData()
     {
        return $this->data;
     }
 
+    /**
+     * @return int
+     */
+    public function getInvoiceId(): int {
+        return $this->data['invoice_id'];
+    }
 }

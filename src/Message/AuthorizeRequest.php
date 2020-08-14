@@ -2,6 +2,10 @@
 
 namespace Omnipay\PayKeeper\Message;
 
+use Omnipay\Common\Exception\InvalidResponseException;
+use Omnipay\Common\Exception\RuntimeException;
+use Omnipay\Common\Message\ResponseInterface;
+
 /**
  * Class AuthorizeRequest
  *
@@ -18,12 +22,10 @@ class AuthorizeRequest extends AbstractRequest
 
         $data = [
             'pay_amount' => $this->getAmount(),
-            'user' => $this->getUser(),
-            'password' => $this->getPassword(),
             'token' => $this->getToken(),
         ];
 
-        // build optional params
+       // build optional params
         if ($email = $this->getClientEmail()) {
             $data['client_email'] = $email;
         }
@@ -44,6 +46,14 @@ class AuthorizeRequest extends AbstractRequest
     }
 
     /**
+     * @return string
+     */
+    public function getHttpMethod(): string
+    {
+       return 'POST';
+    }
+
+    /**
      * @inheritdoc
      */
     public function getAction(): string
@@ -54,7 +64,7 @@ class AuthorizeRequest extends AbstractRequest
     /**
      * @return string
      */
-    public function getClientId(): string
+    public function getClientId(): ?string
     {
         return $this->getParameter('clientId');
     }
@@ -71,7 +81,7 @@ class AuthorizeRequest extends AbstractRequest
     /**
      * @return string
      */
-    public function getOrderId(): string
+    public function getOrderId(): ?string
     {
         return $this->getParameter('orderId');
     }

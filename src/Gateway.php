@@ -4,6 +4,7 @@ namespace Omnipay\PayKeeper;
 
 use Omnipay\PayKeeper\Message\AuthorizeRequest;
 use Omnipay\PayKeeper\Message\CaptureRequest;
+use Omnipay\PayKeeper\Message\InvoiceRequest;
 use Omnipay\PayKeeper\Message\OrderStatusRequest;
 use Omnipay\PayKeeper\Message\RefundRequest;
 use Omnipay\Common\AbstractGateway;
@@ -19,7 +20,6 @@ use Omnipay\PayKeeper\Message\TokenRequest;
  * @method \Omnipay\Common\Message\RequestInterface deleteCard(array $options = array())
  * @method \Omnipay\Common\Message\RequestInterface completePurchase(array $options = array())
  * @method \Omnipay\Common\Message\RequestInterface completeAuthorize(array $options = array())
- * @method \Omnipay\Common\Message\RequestInterface authorize(array $options = array())
  * @method \Omnipay\Common\Message\NotificationInterface acceptNotification(array $options = array())
  * @method \Omnipay\Common\Message\RequestInterface fetchTransaction(array $options = [])
  */
@@ -143,7 +143,7 @@ class Gateway extends AbstractGateway
      * @param array $options array of options
      * @return RequestInterface
      */
-    public function purchase(array $options = []): RequestInterface
+    public function authorize(array $options = []): RequestInterface
     {
         return $this->createRequest(AuthorizeRequest::class, $options);
     }
@@ -206,6 +206,17 @@ class Gateway extends AbstractGateway
     public function supportToken(): bool
     {
         return method_exists($this, 'token');
+    }
+
+    /**
+     * Order status request
+     *
+     * @param array $options
+     * @return RequestInterface
+     */
+    public function invoice(array $options = []): RequestInterface
+    {
+        return $this->createRequest(InvoiceRequest::class, $options);
     }
 
 
