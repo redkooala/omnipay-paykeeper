@@ -44,7 +44,7 @@ class AuthorizeResponse extends Response implements RedirectResponseInterface
      */
     public function getMessage(): ?string
     {
-        return $this->data['msg'] ?? null;
+        return null;
     }
 
     /**

@@ -133,7 +133,7 @@ abstract class AbstractRequest extends BaseAbstractRequest
     {
         $url = $this->getUrl();
         $httpResponse = $this->httpClient->request(
-            'GET',
+            $this->getHttpMethod(),
             $url,
             $this->getHeaders(),
             http_build_query($data, '', '&')

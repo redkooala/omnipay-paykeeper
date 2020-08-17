@@ -13,7 +13,7 @@ class RefundResponse extends Response
      */
     public function isSuccessful(): bool
     {
-        return $this->data['success'];
+        return isset($this->data['result']) && ($this->data['result'] === 'success');
     }
 
     /**

@@ -46,6 +46,27 @@ class AuthorizeRequest extends AbstractRequest
     }
 
     /**
+     * Get the card token.
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->getParameter('token');
+    }
+
+    /**
+     * Sets the card token.
+     *
+     * @param string $value
+     * @return $this
+     */
+    public function setToken($value)
+    {
+        return $this->setParameter('token', $value);
+    }
+
+    /**
      * @return string
      */
     public function getHttpMethod(): string
