@@ -5,6 +5,7 @@ namespace Omnipay\PayKeeper;
 use Omnipay\PayKeeper\Message\AuthorizeRequest;
 use Omnipay\PayKeeper\Message\CaptureRequest;
 use Omnipay\PayKeeper\Message\InvoiceRequest;
+use Omnipay\PayKeeper\Message\OptionRequest;
 use Omnipay\PayKeeper\Message\OrderStatusRequest;
 use Omnipay\PayKeeper\Message\RefundRequest;
 use Omnipay\Common\AbstractGateway;
@@ -209,7 +210,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Order status request
+     * Invoice request
      *
      * @param array $options
      * @return RequestInterface
@@ -217,6 +218,33 @@ class Gateway extends AbstractGateway
     public function invoice(array $options = []): RequestInterface
     {
         return $this->createRequest(InvoiceRequest::class, $options);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportInvoice(): bool
+    {
+        return method_exists($this, 'invoice');
+    }
+
+    /**
+     * Invoice request
+     *
+     * @param array $options
+     * @return RequestInterface
+     */
+    public function options(array $options = []): RequestInterface
+    {
+        return $this->createRequest(OptionRequest::class, $options);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportOptions(): bool
+    {
+        return method_exists($this, 'options');
     }
 
 

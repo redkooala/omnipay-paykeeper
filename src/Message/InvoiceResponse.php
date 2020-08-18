@@ -33,6 +33,6 @@ class InvoiceResponse extends Response
 
     public function getPayment(): ?int
     {
-        return $this->data['payment'] ?? null;
+        return $this->data['paymentid'] ?? null;
     }
 }
